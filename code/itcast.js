@@ -250,21 +250,42 @@
             });
             return this;
         },
+        //after: function (source) {
+        //    var text;
+        //    var self = this;
+        //    if(itcast.isString(source) && !itcast.isHTML(source)) {
+        //        text = source;
+        //        source = this.constructor();
+        //        source[0] = document.createTextNode(text);
+        //        source.length = 1;
+        //    }else {
+        //        source = itcast(source);
+        //    }
+        //    this.each(function (i,ele) {
+        //        for(var j=source.length-1;j>=0;j--) {
+        //            self.constructor.insertAfter(i===0 ? source[j] : source[j].cloneNode(true),ele);
+        //        }
+        //    });
+        //    return this;
+        //},
         after: function (source) {
-            var text;
-            var self = this;
+            var self = this,
+                text,
+                frag;
             if(itcast.isString(source) && !itcast.isHTML(source)) {
                 text = source;
                 source = this.constructor();
                 source[0] = document.createTextNode(text);
                 source.length = 1;
             }else {
-                source = itcast(source);
+                source = this.constructor(source);
             }
-            this.each(function (i,ele) {
-                for(var j=source.length-1;j>=0;j--) {
-                    self.constructor.insertAfter(i===0 ? source[j] : source[j].cloneNode(true),ele);
-                }
+            this.each(function (i) {
+                frag = document.createDocumentFragment();
+                source.each(function () {
+                    frag.appendChild(i === 0 ? this : this.cloneNode(true));
+                });
+                self.constructor.insertAfter(frag,this);
             });
             return this;
         },
